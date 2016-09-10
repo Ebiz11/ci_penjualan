@@ -98,8 +98,9 @@
             </div>
 
             <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#addForm').slideToggle();">Tambah</a>
+            <button class="btn btn-white" onclick="reload_table()"><i class="fa fa-refresh"></i></button>
             <br><br>
-            <table class="table table-striped table-bordered table-hover dataTables-example" >
+            <!-- <table id="tableBarang" class="table table-striped table-bordered table-hover dataTables-example" >
             <thead>
             <tr>
               <th>No</th>
@@ -112,29 +113,51 @@
               <th>Aksi</th>
             </tr>
             </thead>
-            <tbody id="userData">
-              <?php
-              $no=1;
-              foreach ($barang as $row) { ?>
-
-                <tr class="gradeX">
-                <td> <?php echo $no++ ?></td>
-                <td><?php echo $row['nama_barang'];?></td>
-                <td><?php echo number_format($row['harga_beli'],0,',','.');?></td>
-                <td><?php echo number_format($row['harga_jual'],0,',','.');?></td>
-                <td><?php echo $row['stok'];?></td>
-                <td><?php echo date("d-m-Y",strtotime($row['tanggal']));?></td>
-                <td>
-                  <a href="<?php echo site_url('pembelian/tambah_stok/'.$row['id_barang'])?>" class="btn btn-xs btn-info">Tambah</a>
-                </td>
-                <td>
-                  <a href="javascript:void(0);"  onclick="editBarang('<?php echo $row['id_barang']; ?>')" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i></a>
-                  <a href="javascript:void(0);"  onclick="return confirm('Are you sure to delete data?')? hapus('<?php echo $row['id_barang']; ?>'):false;" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
-                </td>
-              </tr>
-              <?php } ?>
+            <tbody>
             </tbody>
-            </table>
+            <tfoot>
+            <tr>
+              <th>No</th>
+              <th>Nama Barang</th>
+              <th>Harga Beli</th>
+              <th>Harga Jual</th>
+              <th>Stok</th>
+              <th>Tanggal</th>
+              <th>Stok</th>
+              <th>Aksi</th>
+            </tr>
+            </tfoot>
+            </table> -->
+
+            <table id="table" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama Barang</th>
+                  <th>Harga Beli</th>
+                  <th>Harga Jual</th>
+                  <th>Stok</th>
+                  <th>Tanggal</th>
+                  <th>Tambah Stok</th>
+                  <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+
+            <!-- <tfoot>
+            <tr>
+              <th>No</th>
+              <th>Nama Barang</th>
+              <th>Harga Beli</th>
+              <th>Harga Jual</th>
+              <th>Stok</th>
+              <th>Tanggal</th>
+              <th>Stok</th>
+              <th>Aksi</th>
+            </tr>
+            </tfoot> -->
+        </table>
           </div>
       </div>
     </div>
@@ -142,11 +165,40 @@
 </div>
 
 <script>
+  var table;
 
   $(document).ready(function(){
+
+    //datatables
+    table = $('#table').DataTable({
+
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "order": [], //Initial no order.
+
+      // Load data for the table's content from an Ajax source
+      "ajax": {
+          "url": "<?php echo site_url('barang/ajax_list')?>",
+          "type": "POST"
+      },
+
+      //Set column definition initialisation properties.
+      "columnDefs": [
+      {
+          "targets": [ -1 ], //last column
+          "orderable": false, //set not orderable
+      },
+      ],
+
+    });
+
     $('#addForm').hide();
     $('#editForm').hide();
   });
+
+  function reload_table(){
+    table.ajax.reload(null,false); //reload datatable ajax
+  }
 
   function getData(){
     $.ajax({
@@ -167,7 +219,8 @@
       success:function(msg){
         if(msg == 'success'){
           $('#form-insert')[0].reset();
-          getData();
+          // getData();
+          reload_table();
           $('#addForm').slideUp();
         }else{
           alert('Gagal insert data');
@@ -201,7 +254,8 @@
       success:function(msg){
         if(msg == 'success'){
             $('#form-update')[0].reset();
-            getData();
+            // getData();
+            reload_table();
             $('#editForm').slideUp();
         }else{
             alert('Gagal update data.');
@@ -217,7 +271,8 @@
       data: 'id='+id,
       success:function(msg){
         if(msg == 'success'){
-            getData();
+            // getData();
+            reload_table();
         }else{
             alert('Gagal menghapus data.');
         }

@@ -61,3 +61,24 @@
       </div>
   </div>
 </div>
+
+<?php
+$no=1;
+foreach ($barang as $row) { ?>
+
+  <tr class="gradeX">
+  <td> <?php echo $no++ ?></td>
+  <td><?php echo $row['nama_barang'];?></td>
+  <td><?php echo number_format($row['harga_beli'],0,',','.');?></td>
+  <td><?php echo number_format($row['harga_jual'],0,',','.');?></td>
+  <td><?php echo $row['stok'];?></td>
+  <td><?php echo date("d-m-Y",strtotime($row['tanggal']));?></td>
+  <td>
+    <a href="<?php echo site_url('pembelian/tambah_stok/'.$row['id_barang'])?>" class="btn btn-xs btn-info">Tambah</a>
+  </td>
+  <td>
+    <a href="javascript:void(0);"  onclick="editBarang('<?php echo $row['id_barang']; ?>')" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i></a>
+    <a href="javascript:void(0);"  onclick="return confirm('Are you sure to delete data?')? hapus('<?php echo $row['id_barang']; ?>'):false;" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
+  </td>
+</tr>
+<?php } ?>

@@ -17,7 +17,7 @@ class Barang extends CI_Controller {
     $this->load->view('template/header');
     $this->load->view('template/navigasi');
     $data['judul'] = "Data Barang";
-    $data['barang'] = $this->Barang_model->get_data();
+    // $data['barang'] = $this->Barang_model->get_data();
 		$this->load->view('barang/index', $data);
     $this->load->view('template/footer');
 	}
@@ -78,28 +78,60 @@ class Barang extends CI_Controller {
     $this->load->view('template/footer');
   }
 
-  public function getData(){
-    $barang = $this->Barang_model->get_data();
+  // public function getData(){
+  //   $barang = $this->Barang_model->get_data();
+  //
+  //   if(!empty($barang)){
+  //     $count = 0;
+  //     foreach($barang as $row): $count++;
+  //         echo '<tr class="gradeX">';
+  //         echo '<td>'.$count.'</td>';
+  //         echo '<td>'.$row['nama_barang'].'</td>';
+  //         echo '<td>'.number_format($row['harga_beli'],0,',','.').'</td>';
+  //         echo '<td>'.number_format($row['harga_jual'],0,',','.').'</td>';
+  //         echo '<td>'.$row['stok'].'</td>';
+  //         echo '<td>'.date("d-m-Y",strtotime($row['tanggal'])).'</td>';
+  //         echo '<td><a href="javascript:void(0);"  onclick="addStok()" class="btn btn-xs btn-info">Tambah</a></td>';
+  //         echo '<td>
+  //         <a href="javascript:void(0);"  onclick="editBarang(\''.$row['id_barang'].'\')" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i></a> |
+  //         <a href="javascript:void(0);" onclick="return confirm(\'Are you sure to delete data?\')?hapus(\''.$row['id_barang'].'\'):false;" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a></td>';
+  //         echo '</tr>';
+  //     endforeach;
+  //   }else{
+  //       echo '<tr><td colspan="6">No user(s) found......</td></tr>';
+  //   }
+  // }
 
-    if(!empty($barang)){
-      $count = 0;
-      foreach($barang as $row): $count++;
-          echo '<tr class="gradeX">';
-          echo '<td>'.$count.'</td>';
-          echo '<td>'.$row['nama_barang'].'</td>';
-          echo '<td>'.number_format($row['harga_beli'],0,',','.').'</td>';
-          echo '<td>'.number_format($row['harga_jual'],0,',','.').'</td>';
-          echo '<td>'.$row['stok'].'</td>';
-          echo '<td>'.date("d-m-Y",strtotime($row['tanggal'])).'</td>';
-          echo '<td><a href="javascript:void(0);"  onclick="addStok()" class="btn btn-xs btn-info">Tambah</a></td>';
-          echo '<td>
-          <a href="javascript:void(0);"  onclick="editBarang(\''.$row['id_barang'].'\')" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i></a> |
-          <a href="javascript:void(0);" onclick="return confirm(\'Are you sure to delete data?\')?hapus(\''.$row['id_barang'].'\'):false;" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a></td>';
-          echo '</tr>';
-      endforeach;
-    }else{
-        echo '<tr><td colspan="6">No user(s) found......</td></tr>';
-    }
-  }
+  public function ajax_list(){
+		$list = $this->Barang_model->get_datatables();
+		$data = array();
+		$no = $_POST['start']+1;
+		foreach ($list as $barang) {
+			// $no++;
+			$row = array();
+			$row[] = $no++;
+			$row[] = $barang->nama_barang;
+			$row[] = $barang->harga_beli;
+			$row[] = $barang->harga_jual;
+			$row[] = $barang->stok;
+			$row[] = $barang->tanggal;
+			$row[] = 'tambah stok';
+
+			//add html for action
+      $row[] = '<a class="btn btn-xs btn-warning" href="javascript:void(0)" onclick="editBarang('."'".$barang->id_barang."'".')"><i class="glyphicon glyphicon-pencil"></i></a>
+				  <a class="btn btn-xs btn-danger" href="javascript:void(0)" onclick="hapus('."'".$barang->id_barang."'".')"><i class="glyphicon glyphicon-trash"></i></a>';
+
+			$data[] = $row;
+		}
+
+		$output = array(
+						"draw" => $_POST['draw'],
+						"recordsTotal" => $this->Barang_model->count_all(),
+						"recordsFiltered" => $this->Barang_model->count_filtered(),
+						"data" => $data,
+				);
+		//output to json format
+		echo json_encode($output);
+	}
 
 }
