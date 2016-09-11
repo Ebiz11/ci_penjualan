@@ -189,16 +189,16 @@
     table.ajax.reload(null,false);
   }
 
-  function getData(){
-    $.ajax({
-      type    : 'POST',
-      url     : '<?php echo site_url('barang/getData'); ?>',
-      data    : 'data=load',
-      success :function(html){
-        $('#userData').html(html);
-      }
-    });
-  }
+  // function getData(){
+  //   $.ajax({
+  //     type    : 'POST',
+  //     url     : '<?php //echo site_url('barang/getData'); ?>',
+  //     data    : 'data=load',
+  //     success :function(html){
+  //       $('#userData').html(html);
+  //     }
+  //   });
+  // }
 
   function add(){
     $.ajax({

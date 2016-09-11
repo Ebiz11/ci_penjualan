@@ -5,11 +5,10 @@
  */
 class Keranjang_model extends CI_Model
 {
-
-  function __construct()
-  {
-    $this->load->database();
-  }
+  var $table = 'keranjang';
+	var $column_order = array('id_keranjang','id_barang','nama_barang','jumlah','sub_total',null);
+	var $column_search = array('id_keranjang','id_barang','jumlah');
+	var $order = array('id_keranjang' => 'desc');
 
   public function get_data_join(){
     $this->db->select('*');
@@ -25,22 +24,80 @@ class Keranjang_model extends CI_Model
     return $query->result_array();
   }
 
-  public function insert($harga){
-    $date = date("Y-m-d");
+  public function insert($data){
+    $insert = $this->db->insert('keranjang', $data);
+    return $insert? 'success' : 'error';
+  }
 
-    $data = [
-      'id_barang' => $this->input->post('id_barang'),
-      'jumlah' => $this->input->post('jumlah'),
-      'sub_total' => $harga*$this->input->post('jumlah'),
-      'tanggal' => $date
-    ];
+  public function total_keranjang(){
+    $this->db->select_sum('sub_total', 'total');
+    $query = $this->db->get('keranjang');
+    $hasil = $query->row();
+    return $hasil->total;
+  }
 
-    $this->db->insert('keranjang', $data);
-    redirect('keranjang/tambah');
+  public function updateChart($data){
+    $this->db->where('id_keranjang', $data['id_keranjang']);
+    $update = $this->db->update('keranjang', $data);
+    return $update? 'success':'error';
   }
 
   public function delete($id){
-    $this->db->delete('keranjang', ['id_keranjang' => $id]);
+    $hapus = $this->db->delete('keranjang', ['id_keranjang' => $id]);
+    return $hapus? 'success':'error';
   }
+
+  private function _get_datatables_query(){
+
+		$this->db->from($this->table);
+
+		$i = 0;
+
+		foreach ($this->column_search as $item){
+			if($_POST['search']['value']){
+
+				if($i===0){
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}else{
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($this->column_search) - 1 == $i) {
+					$this->db->group_end();
+        }
+			}
+			$i++;
+		}
+
+		if(isset($_POST['order'])) {
+			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} else if(isset($this->order)) {
+			$order = $this->order;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}
+
+	function get_datatables()
+	{
+		$this->_get_datatables_query();
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function count_filtered()
+	{
+		$this->_get_datatables_query();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function count_all()
+	{
+		$this->db->from($this->table);
+		return $this->db->count_all_results();
+	}
 
 }

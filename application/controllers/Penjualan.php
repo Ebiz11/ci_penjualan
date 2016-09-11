@@ -46,11 +46,13 @@ class Penjualan extends CI_Controller {
     $this->load->view('template/footer');
 	}
 
-	public function tambah($total){
+	public function tambah(){
+		$total = $this->input->post('total_final');
+
 		$last_id = $this->Penjualan_model->insert_transaksi($total);
-		$this->Penjualan_model->insert($last_id);
-		$this->Penjualan_model->delete_keranjang();
-		redirect('keranjang');
+		$insert = $this->Penjualan_model->insert($last_id);
+		$delete = $this->Penjualan_model->delete_keranjang();
+		echo "success";
 	}
 
 	public function hapus($id){

@@ -108,8 +108,8 @@ class Barang extends CI_Controller {
 			$row = array();
 			$row[] = $no++;
 			$row[] = $barang->nama_barang;
-			$row[] = $barang->harga_beli;
-			$row[] = $barang->harga_jual;
+			$row[] = number_format($barang->harga_beli,0,',','.');
+			$row[] = number_format($barang->harga_jual,0,',','.');
 			$row[] = $barang->stok;
 			// $row[] = $barang->tanggal;
 			$row[] = '<a href="javascript:void(0)" onclick="addStok('."'".$barang->id_barang."'".')" class="btn btn-xs btn-info"><i class="fa fa-plus-square"></i></a>';

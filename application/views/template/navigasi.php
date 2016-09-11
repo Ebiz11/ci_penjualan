@@ -24,8 +24,7 @@
 
             <li>
                 <a href="<?php echo site_url('admin/index')?>"><i class="fa fa-th-large"></i> <span class="nav-label">Home</span></a>
-                <a href="<?php echo site_url('admin/transaksi')?>"><i class=" fa fa-exchange"></i> <span class="nav-label">Transaksi</span></a>
-                <a href="<?php echo site_url('admin/keranjang')?>"><i class=" fa fa-money"></i> <span class="nav-label">Keranjang</span></a>
+                <a href="<?php echo site_url('admin/keranjang')?>"><i class=" fa fa-shopping-cart"></i> <span class="nav-label">Transaksi</span></a>
                 <a href="<?php echo site_url('admin/barang')?>"><i class="fa fa-folder-o"></i> <span class="nav-label">Master Barang</span></a>
             </li>
             <li>

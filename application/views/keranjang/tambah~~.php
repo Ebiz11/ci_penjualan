@@ -131,3 +131,23 @@
     });
   });
 </script>
+
+<?php
+$no=1;
+$total=0;
+foreach ($keranjang as $row) { ?>
+
+  <tr class="gradeX">
+    <td> <?php echo $no++ ?></td>
+    <td><?php echo $row['nama_barang'];?></td>
+    <td><?php echo $row['jumlah'];?></td>
+    <td><?php echo $hasil=$row['sub_total']/$row['jumlah'];?></td>
+    <td><?php echo $row['sub_total'];?></td>
+    <td><?php echo date("d-m-Y",strtotime($row['tanggal']));?></td>
+    <td>
+      <a href=" <?php echo site_url('keranjang/hapus/'.$row['id_keranjang']); ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
+    </td>
+  </tr>
+  <?php
+  $total=$total+$row['sub_total'];
+ } ?>
