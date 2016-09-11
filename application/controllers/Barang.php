@@ -69,6 +69,27 @@ class Barang extends CI_Controller {
     echo $update = $this->Barang_model->update($data);
   }
 
+  public function update_stok(){
+    $this->form_validation->set_rules('id_barangStok', 'id_barangStok', 'required');
+		$this->form_validation->set_rules('jumlahStok', 'jumlahStok', 'required');
+		$this->form_validation->set_rules('sub_totalStok', 'sub_totalStok', 'required');
+
+    if($this->form_validation->run() === FALSE){
+    echo "error";
+    }else{
+  		$last_id = $this->Penjualan_model->insert_transaksi_beli($this->input->post('sub_totalStok'));
+      $date = date("Y-m-d");
+      $data = [
+        'id_barang' => $this->input->post('id_barangStok'),
+        'id_transaksi' => $last_id,
+        'jumlah' => $this->input->post('jumlahStok'),
+        'sub_total' => $this->input->post('sub_totalStok'),
+        'tanggal' => $date
+      ];
+  		echo $this->Pembelian_model->insert_stok($data);
+    }
+  }
+
   public function chart(){
     $this->load->view('template/header');
     $this->load->view('template/navigasi');
@@ -77,30 +98,6 @@ class Barang extends CI_Controller {
 		$this->load->view('barang/chart', $data);
     $this->load->view('template/footer');
   }
-
-  // public function getData(){
-  //   $barang = $this->Barang_model->get_data();
-  //
-  //   if(!empty($barang)){
-  //     $count = 0;
-  //     foreach($barang as $row): $count++;
-  //         echo '<tr class="gradeX">';
-  //         echo '<td>'.$count.'</td>';
-  //         echo '<td>'.$row['nama_barang'].'</td>';
-  //         echo '<td>'.number_format($row['harga_beli'],0,',','.').'</td>';
-  //         echo '<td>'.number_format($row['harga_jual'],0,',','.').'</td>';
-  //         echo '<td>'.$row['stok'].'</td>';
-  //         echo '<td>'.date("d-m-Y",strtotime($row['tanggal'])).'</td>';
-  //         echo '<td><a href="javascript:void(0);"  onclick="addStok()" class="btn btn-xs btn-info">Tambah</a></td>';
-  //         echo '<td>
-  //         <a href="javascript:void(0);"  onclick="editBarang(\''.$row['id_barang'].'\')" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i></a> |
-  //         <a href="javascript:void(0);" onclick="return confirm(\'Are you sure to delete data?\')?hapus(\''.$row['id_barang'].'\'):false;" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a></td>';
-  //         echo '</tr>';
-  //     endforeach;
-  //   }else{
-  //       echo '<tr><td colspan="6">No user(s) found......</td></tr>';
-  //   }
-  // }
 
   public function ajax_list(){
 		$list = $this->Barang_model->get_datatables();
@@ -114,12 +111,12 @@ class Barang extends CI_Controller {
 			$row[] = $barang->harga_beli;
 			$row[] = $barang->harga_jual;
 			$row[] = $barang->stok;
-			$row[] = $barang->tanggal;
-			$row[] = 'tambah stok';
+			// $row[] = $barang->tanggal;
+			$row[] = '<a href="javascript:void(0)" onclick="addStok('."'".$barang->id_barang."'".')" class="btn btn-xs btn-info"><i class="fa fa-plus-square"></i></a>';
 
 			//add html for action
-      $row[] = '<a class="btn btn-xs btn-warning" href="javascript:void(0)" onclick="editBarang('."'".$barang->id_barang."'".')"><i class="glyphicon glyphicon-pencil"></i></a>
-				  <a class="btn btn-xs btn-danger" href="javascript:void(0)" onclick="hapus('."'".$barang->id_barang."'".')"><i class="glyphicon glyphicon-trash"></i></a>';
+      $row[] = '<a class="btn btn-xs btn-warning" href="javascript:void(0)" onclick="editBarang('."'".$barang->id_barang."'".')"><i class="fa fa-pencil-square-o"></i></a>
+				  <a class="btn btn-xs btn-danger" href="javascript:void(0)" onclick="hapus('."'".$barang->id_barang."'".')"><i class="fa fa-trash-o"></i></a>';
 
 			$data[] = $row;
 		}

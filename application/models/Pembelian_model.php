@@ -70,18 +70,9 @@ class Pembelian_model extends CI_Model
     return $insert? 'success':'error';
   }
 
-  public function insert_stok($id, $last_id){
-    $date = date("Y-m-d");
-
-    $data = [
-      'id_barang' => $id,
-      'id_transaksi' => $last_id,
-      'jumlah' => $this->input->post('jumlah'),
-      'sub_total' => $this->input->post('sub_total'),
-      'tanggal' => $date
-    ];
-
-    $this->db->insert('pembelian', $data);
+  public function insert_stok($data){
+    $update_stok = $this->db->insert('pembelian', $data);
+    return $update_stok? 'success':'error';
   }
 
   public function delete($id){
