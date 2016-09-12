@@ -159,15 +159,19 @@
     function update(id_keranjang){
       var jumlah = $('#jumlahChart'+id_keranjang).val();
       var harga = $('#hargaChart'+id_keranjang).val();
+      var id_barangChart = $('#id_barangChart'+id_keranjang).val();
       var total = jumlah*harga;
       // var id_keranjang = $('#id_keranjangChart').val();
 
       $.ajax({
         type    : 'POST',
         url     : '<?php echo site_url('keranjang/updateChart'); ?>',
-        data    : 'sub_total='+total+'&jumlah='+jumlah+'&id_keranjang='+id_keranjang,
+        data    : 'sub_total='+total+'&jumlah='+jumlah+'&id_keranjang='+id_keranjang+'&id_barangChart='+id_barangChart,
         success :function(msg){
-          if(msg == 'success'){
+          if(msg == 'min_stok'){
+            alert('Stok tidak mencukupi');
+            reload_table();
+          }else if(msg == 'success'){
               reload_table();
           }else{
               alert('Gagal update stok.');
@@ -216,7 +220,11 @@
         url     : '<?php echo site_url('keranjang/tambah'); ?>',
         data    : $('#transaksiForm').serialize(),
         success :function(msg){
-          if(msg == 'success'){
+          if(msg == 'stok'){
+            alert('Stok tidak mencukupi');
+          }else if(msg == 'jumlah'){
+            alert('Jumlah harus lebih dari 0');
+          }else if (msg == 'success'){
             $('#transaksiForm')[0].reset();
             reload_table();
           }else{

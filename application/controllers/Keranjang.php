@@ -27,11 +27,11 @@ class Keranjang extends CI_Controller
     $date = date("Y-m-d");
     if ($this->input->post('jumlah')<1 OR $this->input->post('jumlah') > $data['stok']) {
 			if ($this->input->post('jumlah')<1) {
-				echo "<script>alert('Input data yang benar');</script>";
+				echo "jumlah";
 			}elseif($this->input->post('jumlah') > $data['stok']) {
-				echo "<script>alert('Input data yang benar');</script>";
+				echo "stok";
 			}else {
-			   echo "<script>alert('Input data yang benar');</script>";
+			  echo "error";
 			}
 		}else{
       $data = [
@@ -57,13 +57,17 @@ class Keranjang extends CI_Controller
   }
 
   public function updateChart(){
-
-    $data = [
-    'sub_total' => $this->input->post('sub_total'),
-    'jumlah' => $this->input->post('jumlah'),
-    'id_keranjang' => $this->input->post('id_keranjang')
-    ];
-    echo $this->Keranjang_model->updateChart($data);
+    $cek_stok = $this->Barang_model->get_data_id($this->input->post('id_barangChart'));
+    if ($this->input->post('jumlah') > $cek_stok['stok']) {
+      echo "min_stok";
+    }else{
+      $data = [
+      'sub_total' => $this->input->post('sub_total'),
+      'jumlah' => $this->input->post('jumlah'),
+      'id_keranjang' => $this->input->post('id_keranjang')
+      ];
+      echo $this->Keranjang_model->updateChart($data);
+    }
   }
 
   public function ajax_list(){
@@ -78,9 +82,9 @@ class Keranjang extends CI_Controller
       $row[] = $no++;
 			$row[] = $rows->nama_barang;
       $harga=$rows->sub_total/$rows->jumlah;
-			$row[] = '<input type="text" class="form-control" id="jumlahChart'.$rows->id_keranjang.'" name="jumlah" value="'.$rows->jumlah.'" required="">
-                <a href="javascript:void(0);" class="btn btn-white" onclick="update('."'".$rows->id_keranjang."'".')"><i class="fa fa-refresh"></i></a>
-                <input type="hidden" class="form-control" id="hargaChart'.$rows->id_keranjang.'" name="harga" value="'.$harga.'" required="">';
+			$row[] = '<input type="text" class="form-control"  onchange="update('."'".$rows->id_keranjang."'".')" id="jumlahChart'.$rows->id_keranjang.'" name="jumlah" value="'.$rows->jumlah.'" required="">
+                <input type="hidden" class="form-control" id="hargaChart'.$rows->id_keranjang.'" name="harga" value="'.$harga.'" required="">
+                <input type="hidden" class="form-control" id="id_barangChart'.$rows->id_keranjang.'" name="id_barangChart" value="'.$rows->id_barang.'" required="">';
 			$row[] = number_format($rows->sub_total,0,',','.');
 
 			$row[] = '<a class="btn btn-xs btn-danger" href="javascript:void(0)" onclick="hapus('."'".$rows->id_keranjang."'".')"><i class="fa fa-trash-o"></i></a>';

@@ -189,32 +189,25 @@
     table.ajax.reload(null,false);
   }
 
-  // function getData(){
-  //   $.ajax({
-  //     type    : 'POST',
-  //     url     : '<?php //echo site_url('barang/getData'); ?>',
-  //     data    : 'data=load',
-  //     success :function(html){
-  //       $('#userData').html(html);
-  //     }
-  //   });
-  // }
-
   function add(){
-    $.ajax({
-      type    : 'POST',
-      url     : '<?php echo site_url('barang/tambah'); ?>',
-      data    : $('#form-insert').serialize(),
-      success :function(msg){
-        if(msg == 'success'){
-          $('#form-insert')[0].reset();
-          reload_table();
-          $('#addForm').slideUp();
-        }else{
-          alert('Gagal insert data');
+    if ($('#form-insert').find('#harga_jual').val() < $('#form-insert').find('#harga_beli').val()) {
+      alert('Harga jual tidak boleh lebih kecil dari harga beli!');
+    }else{
+      $.ajax({
+        type    : 'POST',
+        url     : '<?php echo site_url('barang/tambah'); ?>',
+        data    : $('#form-insert').serialize(),
+        success :function(msg){
+          if(msg == 'success'){
+            $('#form-insert')[0].reset();
+            reload_table();
+            $('#addForm').slideUp();
+          }else{
+            alert('Gagal insert data');
+          }
         }
+        });
       }
-      });
     }
 
   function editBarang(id){
