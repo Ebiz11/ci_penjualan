@@ -46,7 +46,7 @@
                 <td><a href="<?php echo site_url('penjualan/details/'.$row['id_transaksi']) ?>" >detail</a></td>
           			<td><?php echo date("d-m-Y",strtotime($row['tanggal']));?></td>
                 <td>
-                  <a href=" <?php echo site_url('penjualan/hapus/'.$row['id_penjualan']); ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
+                  <a href=" <?php echo site_url('penjualan/hapus/'.$row['id_penjualan']); ?>" disabled="" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
                 </td>
           		</tr>
           		<?php } ?>

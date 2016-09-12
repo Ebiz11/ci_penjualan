@@ -50,7 +50,7 @@
           			<td><?php echo $row['sub_total'];?></td>
           			<td><?php echo date("d-m-Y",strtotime($row['tanggal']));?></td>
                 <td>
-                  <a href=" <?php echo site_url('pembelian/hapus/'.$row['id_pembelian']); ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
+                  <a href=" <?php echo site_url('pembelian/hapus/'.$row['id_pembelian']); ?>" disabled="" class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a>
                 </td>
           		</tr>
           		<?php } ?>
